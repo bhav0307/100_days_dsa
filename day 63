@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int vertex;
+    struct node* next;
+};
+
+// Create new node
+struct node* createNode(int v) {
+    struct node* newNode = (struct node*)malloc(sizeof(struct node));
+    newNode->vertex = v;
+    newNode->next = NULL;
+    return newNode;
+}
+
+
+void addEdge(struct node* adj[], int u, int v) {
+    struct node* newNode = createNode(v);
+    newNode->next = adj[u];
+    adj[u] = newNode;
+
+    newNode = createNode(u);
+    newNode->next = adj[v];
+    adj[v] = newNode;
+}
+
+
+void DFS(struct node* adj[], int visited[], int v) {
+    visited[v] = 1;
+    printf("%d ", v);
+
+    struct node* temp = adj[v];
+    while (temp != NULL) {
+        if (!visited[temp->vertex]) {
+            DFS(adj, visited, temp->vertex);
+        }
+        temp = temp->next;
+    }
+}
+
+int main() {
+    int n, m, u, v, s;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    struct node** adj = (struct node**)malloc(n * sizeof(struct node*));
+    int* visited = (int*)malloc(n * sizeof(int));
+
+    for (int i = 0; i < n; i++) {
+        adj[i] = NULL;
+        visited[i] = 0;
+    }
+
+    printf("Enter number of edges: ");
+    scanf("%d", &m);
+
+    printf("Enter edges (u v):\n");
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d", &u, &v);
+        addEdge(adj, u, v);
+    }
+
+    printf("Enter starting vertex: ");
+    scanf("%d", &s);
+
+    printf("DFS Traversal: ");
+    DFS(adj, visited, s);
+
+    return 0;
+}
